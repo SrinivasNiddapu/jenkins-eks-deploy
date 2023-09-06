@@ -7,12 +7,20 @@ pipeline {
         AWS_DEFAULT_REGION = "us-east-1"
     }
     stages {
-        stage("Create an EKS Cluster") {
+        stage("Deploy Application") {
             steps {
                 script {
                     dir('kubernetes') {
                         sh "aws eks update-kubeconfig --name LabCluster"
                         sh "kubectl apply -f nginx-deployment.yaml"
+                    }
+                }
+            }
+        }
+        stage("Create a LoadBalancer") {
+            steps {
+                script {
+                    dir('kubernetes') {
                         sh "kubectl apply -f nginx-service.yaml"
                     }
                 }
